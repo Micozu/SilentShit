@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Silent Shit</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #1a237e;
+            --secondary-color: #0d47a1;
+            --accent-color: #2962ff;
+            --text-color: #ffffff;
+            --background-dark: rgba(13, 19, 33, 0.95);
+            --border-color: rgba(41, 98, 255, 0.3);
+            --hover-color: rgba(41, 98, 255, 0.2);
+            --tooltip-bg: var(--background-dark);
+            --success-color: #4CAF50;
+            --warning-color: #FFC107;
+            --error-color: #f44336;
+            --danger-color: #ff1744;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: transparent;
+            display: none;
+            user-select: none;
+        }
+        
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--background-dark);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+            width: 800px;
+            color: var(--text-color);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.3s ease-out;
+            will-change: transform, opacity;
+            transform: translate3d(-50%, -50%, 0);
+            backface-visibility: hidden;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -48%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .title {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--accent-color), #64b5f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .slogan {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 32px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .close-btn:hover {
+            color: var(--accent-color);
+            background: rgba(41, 98, 255, 0.1);
+            transform: rotate(90deg);
+        }
+        
+        .effects-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        
+        .effect-btn {
+            position: relative;
+            background: rgba(41, 98, 255, 0.1);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            color: var(--text-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            overflow: visible;
+        }
+        
+        .effect-btn:hover {
+            background: var(--hover-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .effect-btn[data-tooltip] {
+            position: relative;
+        }
+        
+        .effect-btn[data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 12px;
+            background: var(--tooltip-bg);
+            color: var(--text-color);
+            font-size: 12px;
+            white-space: nowrap;
+            border-radius: 6px;
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            animation: tooltipFade 0.3s ease-out;
+        }
+        
+        .effect-btn[data-tooltip]:hover::before {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 5px);
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--tooltip-bg) transparent transparent transparent;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        
+        @keyframes tooltipFade {
+            from { opacity: 0; transform: translate(-50%, 10px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        
+        .stop-btn {
+            grid-column: 1 / -1;
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stop-btn:hover {
+            background: rgba(244, 67, 54, 0.3);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .clear-btn {
+            grid-column: 1 / -1;
+            background: rgba(33, 150, 243, 0.2);
+            border: 1px solid rgba(33, 150, 243, 0.3);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .clear-btn:hover {
+            background: rgba(33, 150, 243, 0.3);
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: white;
+            animation: fadeIn 0.3s ease-out;
+            background: var(--background-dark);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 20px rgba(41, 98, 255, 0.3);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            background: linear-gradient(45deg, var(--accent-color), #64b5f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .loading-status {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 1px;
+        }
+
+        /* Alert Box */
+        .alert-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: none;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .alert-box {
+            background: var(--background-dark);
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            color: var(--text-color);
+            min-width: 350px;
+            max-width: 400px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+            transform: translateX(120%);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+        }
+
+        .alert-box.show {
+            transform: translateX(0);
+        }
+
+        .alert-box.success {
+            border-left-color: var(--success-color);
+        }
+
+        .alert-box.warning {
+            border-left-color: var(--warning-color);
+        }
+
+        .alert-box.error {
+            border-left-color: var(--error-color);
+        }
+
+        .alert-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .alert-icon {
+            font-size: 24px;
+            margin-right: 12px;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            font-size: 18px;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .alert-message {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .alert-close {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-size: 20px;
+            padding: 0;
+            line-height: 1;
+            transition: all 0.3s;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .alert-close:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .alert-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            width: 100%;
+            border-radius: 0 0 6px 6px;
+            overflow: hidden;
+        }
+
+        .alert-progress-bar {
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            width: 100%;
+            transition: width linear;
+        }
+
+        /* Chat Spam UI */
+        .chat-spam-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--background-dark);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+            width: 500px;
+            color: var(--text-color);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            display: none;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .chat-spam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .chat-spam-title {
+            font-size: 24px;
+            font-weight: 600;
+            background: linear-gradient(45deg, var(--accent-color), #64b5f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .chat-spam-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .chat-spam-close:hover {
+            color: var(--error-color);
+            background: rgba(244, 67, 54, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .chat-spam-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chat-spam-input {
+            background: rgba(41, 98, 255, 0.1);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 6px;
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            resize: none;
+            height: 120px;
+            width: 100%;
+            box-sizing: border-box;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s;
+        }
+
+        .chat-spam-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(41, 98, 255, 0.2);
+        }
+
+        .chat-spam-duration {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-spam-duration label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .chat-spam-duration select {
+            background: rgba(41, 98, 255, 0.1);
+            border: 1px solid var(--border-color);
+            padding: 10px 15px;
+            border-radius: 6px;
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            width: 100%;
+            margin-top: 10px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .chat-spam-duration select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(41, 98, 255, 0.2);
+        }
+
+        .chat-spam-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .chat-spam-btn {
+            padding: 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            flex: 1;
+            background: rgba(41, 98, 255, 0.2);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            backdrop-filter: blur(5px);
+        }
+
+        .chat-spam-btn:hover {
+            background: var(--hover-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .chat-spam-start {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            color: white;
+        }
+
+        .chat-spam-start:hover {
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        .chat-spam-stop {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .chat-spam-stop:hover {
+            background: rgba(244, 67, 54, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Silent Shit</div>
+            <div class="loading-status" id="loadingStatus">Initializing...</div>
+        </div>
+    </div>
+
+    <!-- Alert Container -->
+    <div class="alert-container" id="alertContainer"></div>
+
+    <!-- Chat Spam UI -->
+    <div class="chat-spam-container" id="chatSpamContainer">
+        <div class="chat-spam-header">
+            <div class="chat-spam-title">Chat Spam</div>
+            <button class="chat-spam-close" onclick="closeChatSpam()">×</button>
+        </div>
+        <div class="chat-spam-form">
+            <textarea class="chat-spam-input" id="spamText" placeholder="Enter text to spam..."></textarea>
+            <div class="chat-spam-duration">
+                <select id="spamDuration">
+                    <option value="5000">5 seconds</option>
+                    <option value="10000">10 seconds</option>
+                    <option value="30000">30 seconds</option>
+                    <option value="60000">1 minute</option>
+                    <option value="300000">5 minutes</option>
+                </select>
+            </div>
+            <div class="chat-spam-buttons">
+                <button class="chat-spam-btn chat-spam-start" onclick="startSpam()">Start Spam</button>
+                <button class="chat-spam-btn chat-spam-stop" onclick="stopSpam()">Stop Spam</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Menu -->
+    <div class="container" id="mainMenu" style="display: none;">
+        <div class="header">
+            <div>
+                <div class="title">Silent Shit</div>
+                <div class="slogan">Advanced Effects Menu</div>
+            </div>
+            <button class="close-btn" onclick="closeUI()">×</button>
+        </div>
+        <div class="effects-grid">
+            <button class="effect-btn" onclick="triggerEffect('airstrike')" data-tooltip="Spawns multiple planes that drop bombs across the map">✈️ Airstrike</button>
+            <button class="effect-btn" onclick="triggerEffect('earthquake')" data-tooltip="Creates massive explosions and shakes the screen">🌋 Earthquake</button>
+            <button class="effect-btn" onclick="triggerEffect('monkeyAttack')" data-tooltip="Spawns aggressive monkeys with RPGs">🐒 Monkey Attack</button>
+            <button class="effect-btn" onclick="triggerEffect('chaos')" data-tooltip="Spawns random vehicles and explosions">💥 Chaos</button>
+            <button class="effect-btn" onclick="triggerEffect('giveWeapons')" data-tooltip="Gives you all weapons with max ammo">🔫 Give Weapons</button>
+            <button class="effect-btn" onclick="triggerEffect('summonPlayers')" data-tooltip="Teleports all players to your location">👥 Summon Players</button>
+            <button class="effect-btn" onclick="triggerEffect('chatspam')" data-tooltip="Opens chat spam menu">💬 Chat Spam</button>
+            <button class="effect-btn" onclick="triggerEffect('freezeTime')" data-tooltip="Freezes the game time">⏰ Freeze Time</button>
+            <button class="effect-btn" onclick="triggerEffect('thunderStorm')" data-tooltip="Creates a thunder storm">⛈️ Thunder Storm</button>
+            <button class="effect-btn" onclick="triggerEffect('vehicleRain')" data-tooltip="Makes vehicles rain from the sky">🚗 Vehicle Rain</button>
+            <button class="effect-btn" onclick="triggerEffect('superJump')" data-tooltip="Gives you super jump ability">🦘 Super Jump</button>
+            <button class="effect-btn" onclick="triggerEffect('npcArmy')" data-tooltip="Spawns an army of NPCs">👥 NPC Army</button>
+            <button class="effect-btn" onclick="triggerEffect('screenEffects')" data-tooltip="Applies random screen effects">🎨 Screen Effects</button>
+            <button class="effect-btn" onclick="triggerEffect('soundEffects')" data-tooltip="Plays random sound effects">🔊 Sound Effects</button>
+            <button class="effect-btn" onclick="triggerEffect('particleEffects')" data-tooltip="Creates particle effects">✨ Particle Effects</button>
+            <button class="effect-btn" onclick="triggerEffect('reviveAll')" data-tooltip="Revives all dead players on the server">💉 Revive All</button>
+            <button class="effect-btn stop-btn" onclick="triggerEffect('stop')" data-tooltip="FORCE STOP ALL ACTIVE EFFECTS AND CLEAN UP">🛑 FORCE STOP ALL</button>
+            <button class="effect-btn clear-btn" onclick="triggerEffect('clearWorld')" data-tooltip="Remove all vehicles, props, and NPCs">🧹 Clear World</button>
+        </div>
+    </div>
+
+    <script>
+        function showAlert(type, title, message, duration = 5000) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertBox = document.createElement('div');
+            alertBox.className = `alert-box ${type}`;
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'alert-close';
+            closeBtn.innerHTML = '×';
+            closeBtn.onclick = () => removeAlert(alertBox);
+            
+            const header = document.createElement('div');
+            header.className = 'alert-header';
+            
+            const icon = document.createElement('div');
+            icon.className = 'alert-icon';
+            icon.innerHTML = getIconForType(type);
+            
+            const titleElement = document.createElement('div');
+            titleElement.className = 'alert-title';
+            titleElement.textContent = title;
+            
+            const messageElement = document.createElement('div');
+            messageElement.className = 'alert-message';
+            messageElement.textContent = message;
+            
+            const progress = document.createElement('div');
+            progress.className = 'alert-progress';
+            
+            const progressBar = document.createElement('div');
+            progressBar.className = 'alert-progress-bar';
+            
+            header.appendChild(icon);
+            header.appendChild(titleElement);
+            alertBox.appendChild(closeBtn);
+            alertBox.appendChild(header);
+            alertBox.appendChild(messageElement);
+            progress.appendChild(progressBar);
+            alertBox.appendChild(progress);
+            
+            alertContainer.appendChild(alertBox);
+            alertContainer.style.display = 'block';
+            
+            // Trigger animation
+            setTimeout(() => alertBox.classList.add('show'), 10);
+            
+            // Start progress bar
+            if (duration > 0) {
+                progressBar.style.transition = `width ${duration}ms linear`;
+                setTimeout(() => progressBar.style.width = '0%', 10);
+                setTimeout(() => removeAlert(alertBox), duration);
+            }
+        }
+
+        function getIconForType(type) {
+            switch(type) {
+                case 'success':
+                    return '✅';
+                case 'warning':
+                    return '⚠️';
+                case 'error':
+                    return '❌';
+                default:
+                    return 'ℹ️';
+            }
+        }
+
+        function removeAlert(alertBox) {
+            alertBox.classList.remove('show');
+            setTimeout(() => {
+                alertBox.remove();
+                if (document.getElementById('alertContainer').children.length === 0) {
+                    document.getElementById('alertContainer').style.display = 'none';
+                }
+            }, 300);
+        }
+
+        function showChatSpam() {
+            document.getElementById('chatSpamContainer').style.display = 'block';
+        }
+
+        function closeChatSpam() {
+            document.getElementById('chatSpamContainer').style.display = 'none';
+        }
+
+        function startSpam() {
+            const text = document.getElementById('spamText').value;
+            const duration = document.getElementById('spamDuration').value;
+            
+            if (!text) {
+                showAlert('error', 'Error', 'Please enter text to spam', 3000);
+                return;
+            }
+
+            fetch(`https://${GetParentResourceName()}/startSpam`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    text: text,
+                    duration: parseInt(duration)
+                })
+            });
+        }
+
+        function stopSpam() {
+            fetch(`https://${GetParentResourceName()}/stopSpam`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            });
+        }
+
+        // Loading screen functions
+        function showLoadingScreen() {
+            document.getElementById('loadingScreen').style.display = 'flex';
+            updateLoadingStatus('Checking system integrity...');
+        }
+
+        function hideLoadingScreen() {
+            document.getElementById('loadingScreen').style.display = 'none';
+        }
+
+        function updateLoadingStatus(status) {
+            document.getElementById('loadingStatus').textContent = status;
+        }
+
+        // Message handler
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+
+            switch(data.type) {
+                case 'openLoadingUI':
+                    document.body.style.display = 'block';
+                    document.getElementById('loadingScreen').style.display = 'flex';
+                    break;
+                case 'openMainUI':
+                    document.getElementById('loadingScreen').style.display = 'none';
+                    document.getElementById('mainMenu').style.display = 'block';
+                    break;
+                case 'closeUI':
+                    document.body.style.display = 'none';
+                    document.getElementById('mainMenu').style.display = 'none';
+                    document.getElementById('loadingScreen').style.display = 'none';
+                    break;
+                case 'showAlert':
+                    showAlert(event.data.alertType, event.data.title, event.data.message, event.data.duration);
+                    break;
+                case 'showChatSpam':
+                    document.getElementById('chatSpamContainer').style.display = 'block';
+                    break;
+            }
+        });
+
+        function closeUI() {
+            fetch(`https://${GetParentResourceName()}/close`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            });
+        }
+
+        function triggerEffect(effect) {
+            if (effect === 'chatspam') {
+                showChatSpam();
+                return;
+            }
+
+            fetch(`https://${GetParentResourceName()}/effect`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    effect: effect
+                })
+            });
+        }
+    </script>
+</body>
+</html> 
